@@ -105,10 +105,8 @@ drag & drop   →   run\verifica.cmd
 
 ### v1.5
 - `Setup_Trust.cmd`: rimossi riferimenti hardcoded alla mail del mittente; mail ora estratta dinamicamente dal keyring tramite fingerprint
-- `Setup_Trust.cmd`: algoritmo di estrazione mail allineato a quello di `Setup_keys.cmd` (sostituzione `:::=:EMPTY:`, token 10)
 - `verifica.cmd`: aggiunto rilevamento pacchetti AEAD — risolto bug UNKNOWN/RC=2 su file cifrati con GPG 2.3+
 - `verifica.cmd`: aggiunta `pause` finale — risolto problema finestra che si chiudeva in drag&drop
-- `decifra.cmd`: rimosso riferimento hardcoded `sogei_publickey.asc`, allineato a `trust\publickey.asc`
 - Guide: riscrittura completa v1.5 — guida operativa (non tecnici) e guida rapida (tecnici)
 - `trust/`: inclusi `publickey.asc` e `fingerprint.txt` di test per verifica funzionamento
 
