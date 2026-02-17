@@ -1,0 +1,41 @@
+# ============================================================
+# .gitignore - KIT GPG
+# ============================================================
+
+# Report generati automaticamente dagli script
+reports/
+
+# File temporanei Windows
+*.tmp
+*.temp
+Thumbs.db
+desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# File decifrati (mai committare dati in chiaro)
+in/
+out/
+
+# Keyring GPG (chiavi private — MAI nel repository)
+home/private-keys-v1.d/
+home/pubring.kbx
+home/pubring.kbx~
+home/trustdb.gpg
+home/S.gpg-agent
+home/gpg-agent.conf
+home/random_seed
+
+# Backup
+backups/
+
+# Chiavi pubbliche esportate (generate localmente da Setup_keys)
+public_key_*.asc
+
+# Editor
+.vscode/
+*.swp
+*~
