@@ -275,7 +275,6 @@ echo %ESC%[33m  [WARN] Nessuna chiave pubblica importata%ESC%[0m
 goto :PUB_CLEANUP
 
 :PUB_GPG_MISSING
-echo 2
 echo %ESC%[31m  [ERRORE] Impossibile verificare (gpg.exe mancante)%ESC%[0m
 goto :PUB_END
 

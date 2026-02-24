@@ -25,13 +25,8 @@ set "PUBKEY=%TRUST_DIR%\publickey.asc"
 REM --- ESC per colori ANSI
 for /F %%a in ('echo prompt $E^| cmd') do set "ESC=%%a"
 
-REM --- Timestamp safe
-set "TS=%date%_%time%"
-set "TS=%TS: =%"
-set "TS=%TS:/=-%"
-set "TS=%TS::=-%"
-set "TS=%TS:,=-%"
-set "TS=%TS:.=-%"
+REM --- Timestamp locale-indipendente via PowerShell
+for /f "usebackq delims=" %%T in (`powershell -NoProfile -Command "(Get-Date).ToString('yyyyMMdd_HHmmss')"`) do set "TS=%%T"
 
 REM --- Input file (drag&drop o prompt)
 set "INPUT_FILE=%~1"
@@ -95,9 +90,23 @@ if /I "%INPUT_FILE_EXT%"==".asc" goto EXT_OK
 
 echo %ESC%[33m[WARN] Estensione non supportata: %INPUT_FILE_EXT% (solo .gpg/.asc)%ESC%[0m
 echo [WARN] Estensione non supportata: %INPUT_FILE_EXT%>>"%REPORT_FILE%"
+del /q "%TMP_STATUS%" >nul 2>&1
+del /q "%TMP_PKT%" >nul 2>&1
 exit /b 2
 
 :EXT_OK
+
+REM ============================================================================
+REM  CHECK PRESENZA gpg.exe
+REM ============================================================================
+if not exist "%GPG_EXE%" (
+  echo %ESC%[31m[ERRORE] gpg.exe non trovato: %GPG_EXE%%ESC%[0m
+  echo [ERRORE] gpg.exe non trovato: %GPG_EXE%>>"%REPORT_FILE%"
+  del /q "%TMP_STATUS%" >nul 2>&1
+  del /q "%TMP_PKT%" >nul 2>&1
+  pause
+  exit /b 1
+)
 
 REM ============================================================================
 REM  IMPORT CHIAVE PUBBLICA (opzionale)

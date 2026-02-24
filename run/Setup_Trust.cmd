@@ -2,7 +2,7 @@
 setlocal EnableExtensions EnableDelayedExpansion
 
 REM ==========================================================
-REM  KIT_GPG - Setup Trust Chiave Mittente (Versione Semplificata)
+REM  KIT_GPG - Setup Trust Chiave Mittente - VERSIONE 1.5
 REM ==========================================================
 
 REM Colori ANSI
@@ -32,9 +32,8 @@ set "REPORT_DIR=%BASE_DIR%\reports"
 REM Crea cartella reports
 if not exist "%REPORT_DIR%" mkdir "%REPORT_DIR%" >nul 2>&1
 
-REM Crea nome file report
-set "TIMESTAMP=%date:~-4%%date:~3,2%%date:~0,2%_%time:~0,2%%time:~3,2%%time:~6,2%"
-set "TIMESTAMP=%TIMESTAMP: =0%"
+REM Crea nome file report (timestamp locale-indipendente via PowerShell)
+for /f "usebackq delims=" %%T in (`powershell -NoProfile -Command "(Get-Date).ToString('yyyyMMdd_HHmmss')"`) do set "TIMESTAMP=%%T"
 set "REPORT_FILE=%REPORT_DIR%\setup_trust_%TIMESTAMP%.txt"
 
 REM Leggi fingerprint dal file (OBBLIGATORIO)
@@ -48,7 +47,10 @@ for /f "usebackq delims=" %%F in ("%FINGERPRINT_FILE%") do (
 )
 if "!EXPECTED_FPR!"=="" goto :ERROR_EMPTY_FINGERPRINT
 
-REM Variabili
+REM Variabili trust
+REM  TRUST_LEVEL=4 -> FULL (verifica singola: solo file KIT)
+REM  TRUST_LEVEL=5 -> ULTIMATE (doppia verifica: file KIT + email)
+REM  Valori definiti dal manuale GnuPG: 2=unknown, 3=marginal, 4=full, 5=ultimate
 set "TRUST_LEVEL=4"
 set "TRUST_LABEL=FULL"
 set "MANUAL_CHECK_OK=0"
