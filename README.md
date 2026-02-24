@@ -156,7 +156,7 @@ The kit uses **RSA 3072 bits** by default, in line with these requirements. Key 
 - `Setup_Trust.cmd`: mail extraction algorithm aligned with `Setup_keys.cmd` (`:::=:EMPTY:` substitution, token 10)
 - `verifica.cmd`: added AEAD packet detection — fixed UNKNOWN/RC=2 bug on files encrypted with GPG 2.3+
 - `verifica.cmd`: added final `pause` — fixed window closing immediately on drag & drop
-- `decifra.cmd`: removed hardcoded `sogei_publickey.asc` reference, aligned to `trust\publickey.asc`
+- `decifra.cmd`: removed hardcoded public key reference, aligned to `trust\publickey.asc`
 - Documentation: full rewrite v1.5 — operational guide (non-technical) and quick reference (technical), both IT and EN
 - `trust/`: included test `publickey.asc` and `fingerprint.txt` for functional verification
 
