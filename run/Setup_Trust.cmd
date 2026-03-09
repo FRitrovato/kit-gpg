@@ -2,7 +2,7 @@
 setlocal EnableExtensions EnableDelayedExpansion
 
 REM ==========================================================
-REM  KIT_GPG - Setup Trust Chiave Mittente (Versione Semplificata)
+REM  KIT_GPG - Setup Trust Chiave Mittente - VERSIONE 2.0
 REM ==========================================================
 
 REM Colori ANSI
