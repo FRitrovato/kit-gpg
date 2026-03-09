@@ -1,6 +1,6 @@
 @echo off
 REM ============================================================================
-REM  diagnostica.cmd - Diagnostica sistema KIT GPG - VERSIONE 1.0
+REM  diagnostica.cmd - Diagnostica sistema KIT GPG - VERSIONE 2.0
 REM  
 REM  Funzionalita':
 REM  - Verifica presenza e versione binari GPG
@@ -21,7 +21,7 @@ for /F %%a in ('echo prompt $E^| cmd') do set "ESC=%%a"
 cls
 echo.
 echo %ESC%[36m============================================================%ESC%[0m
-echo %ESC%[36m   KIT GPG - DIAGNOSTICA SISTEMA v1.0%ESC%[0m
+echo %ESC%[36m   KIT GPG - DIAGNOSTICA SISTEMA v2.0%ESC%[0m
 echo %ESC%[36m============================================================%ESC%[0m
 echo.
 

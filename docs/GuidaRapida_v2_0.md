@@ -1,6 +1,6 @@
-# KIT GPG — GUIDA RAPIDA v1.5
+# KIT GPG — GUIDA RAPIDA v2.0
 
-> Riferimento operativo sintetico. Per la guida completa: `Guida_Operativa_Kit_GPG_v1_5.md`
+> Riferimento operativo sintetico. Per la guida completa: `Guida_Operativa_Kit_GPG_v2_0.md`
 
 ---
 
@@ -45,6 +45,25 @@ public_key_<Nome>.asc  →  mittente (email / PEC / portale)
 
 ## OPERATIVITÀ CORRENTE
 
+### Cifrare un file da inviare
+```
+drag & drop  →  run\cifra.cmd
+```
+oppure doppio clic su `cifra.cmd` e inserisci il percorso del file quando richiesto.
+
+**Flusso:**
+1. Selezione chiave firmataria (tua chiave privata)
+2. Importazione chiavi pubbliche aggiuntive da `trust\import\` (opzionale)
+3. Selezione destinatari tra le chiavi pubbliche nel portachiavi (toggle, multi-selezione)
+4. Inserimento percorso file (o drag & drop)
+5. Riepilogo e conferma → Pinentry per la Passphrase
+6. Output: `out\<nomefile>.gpg`
+
+**Importare nuove chiavi pubbliche:**
+- Copia i file `.asc` ricevuti dai destinatari in `trust\import\`
+- Al prossimo avvio di `cifra.cmd`, lo script proporrà di importarle
+- Dopo l'importazione i file vengono spostati in `trust\import\imported\`
+
 ### Decifrare un file
 ```
 drag & drop  →  run\decifra.cmd
@@ -59,12 +78,10 @@ Output nella stessa cartella del file di input, senza estensione `.gpg`.
 |----|-------|
 | 0 | OK — decifrato + firma valida |
 | 1 | OK con warning — trust non validato (esegui Setup_Trust) |
-| 2 | Decifrato — firma non verificabile (chiave mittente assente o AEAD non rilevato*) |
+| 2 | Decifrato — firma non verificabile (chiave mittente assente o AEAD non rilevato) |
 | 3 | FAIL — decifrazione fallita |
 | 4 | FAIL — passphrase errata |
 | 5 | FAIL — nessuna chiave privata corrispondente |
-
-*`verifica.cmd` rileva sia `:encrypted data packet:` che `:aead encrypted packet:`.
 
 ### Verificare la firma
 ```
@@ -91,11 +108,15 @@ Report salvato in `reports\verify_report_<timestamp>.txt`.
 KIT_GPG/
 ├── bin/           gpg.exe, gpg-agent.exe, pinentry-w32.exe, paperkey.exe + DLL
 ├── home/          GNUPGHOME — keyring, trustdb, gpg.conf
-├── trust/         publickey.asc + fingerprint.txt  (forniti dal mittente)
-├── run/           Setup_keys | Setup_Trust | decifra | verifica | diagnostica
+├── trust/
+│   ├── publickey.asc      chiave pubblica mittente principale
+│   ├── fingerprint.txt    fingerprint atteso (per Setup_Trust)
+│   └── import/            zona di carico chiavi pubbliche aggiuntive
+│       └── imported/      file .asc già importati (archiviati automaticamente)
+├── run/           Setup_keys | Setup_Trust | cifra | decifra | verifica | diagnostica
 ├── docs/          Guida Operativa + Guida Rapida
 ├── in/            drop zone file .gpg in ingresso
-├── out/           output decifratura (opzionale)
+├── out/           file .gpg cifrati in uscita
 ├── reports/       log automatici di tutti gli script
 └── backups/       backup manuali
 ```
@@ -123,6 +144,17 @@ for /f "tokens=2 delims=<"  %%A in ("!UID_FULL!")  do (
 )
 ```
 
+### Cifratura + firma (cifra.cmd)
+```batch
+REM --trust-model always: evita richieste interattive su chiavi senza trust configurato
+REM Le variabili delayed vengono trasferite in normali prima della chiamata GPG
+set "GPG_SIGNER=!SENDER_FPR!"
+set "GPG_RECIP=!RECIP_ARGS!"
+"%GPG_EXE%" --homedir "%HOME%" --trust-model always ^
+    --encrypt --sign --local-user "%GPG_SIGNER%" %GPG_RECIP% ^
+    --output "%OUT_FILE%" "%GPG_INPUT%"
+```
+
 ### Rilevamento cifratura AEAD (verifica.cmd)
 ```batch
 findstr /C:":encrypted data packet:" "%TMP_PKT%" >nul && set "IS_ENCRYPTED=1"
@@ -136,11 +168,11 @@ findstr /C:":aead encrypted packet:"  "%TMP_PKT%" >nul && set "IS_ENCRYPTED=1"
 | Sintomo | Causa | Fix |
 |---------|-------|-----|
 | `TRUST not confirmed` sempre | Setup_Trust non eseguito | `run\Setup_Trust.cmd` |
-| `UNKNOWN` + RC=2 su file cifrato | AEAD non rilevato (vecchia `verifica`) | Aggiorna `verifica.cmd` v1.6+ |
+| `UNKNOWN` + RC=2 su file cifrato | AEAD non rilevato (vecchia `verifica`) | Disponibile dalla v2.0 |
 | Fingerprint non corrisponde | Chiave sostituita/manomessa | Contatta mittente fuori banda |
 | `No secret key` | Mittente ha usato chiave pubblica obsoleta | Reinvia `public_key_<Nome>.asc` aggiornata |
 | `Bad passphrase` | Passphrase errata | Riprova; controlla CAPS LOCK e layout tastiera |
-| Script si chiude subito | Drag&drop su vecchia `verifica` senza `pause` | Aggiorna a v1.6+ |
+| File da importare riproposti | (bug versioni precedenti) | Disponibile dalla v2.0 |
 | Percorso con `&` o accenti | cmd non gestisce certi caratteri | Sposta kit in percorso semplice (es. `E:\KIT_GPG`) |
 
 ### Diagnostica completa
@@ -171,8 +203,14 @@ gpg --homedir home --status-fd 1 --verify file.gpg
 
 # Decrypt manuale (output su stdout)
 gpg --homedir home --decrypt file.gpg
+
+# Cifratura manuale multi-destinatario
+gpg --homedir home --trust-model always --encrypt --sign \
+    --local-user <FPR_FIRMATARIO> \
+    --recipient <FPR_DEST1> --recipient <FPR_DEST2> \
+    --output file.gpg file_originale
 ```
 
 ---
 
-*KIT GPG v1.5 — Quick Reference*
+*KIT GPG v2.0 — Quick Reference*

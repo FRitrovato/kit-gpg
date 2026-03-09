@@ -1,164 +1,145 @@
-# GPG Portable Kit
+# KIT GPG Portabile
 
-**Portable system for secure reception and decryption of GPG-encrypted files.**  
-Runs from a USB drive on any Windows PC, no installation required.
-
----
-
-## What it is
-
-GPG Portable Kit is a self-contained bundle that includes:
-
-- **GnuPG 2.x** (portable, with DLLs and pinentry)
-- **`.cmd` scripts** for all common operations (key generation, verification, decryption)
-- **Documentation** for both end users and technical staff
-
-The kit manages the full lifecycle of a secure file exchange: key generation, sender key verification, decryption and digital signature validation.
+**Sistema portabile per la cifratura, l'invio e la ricezione sicura di file con GPG.**  
+Funziona da chiavetta USB su qualsiasi PC Windows, senza installazione.
 
 ---
 
-## Structure
+## Cos'è
+
+KIT GPG è un bundle autosufficiente che include:
+
+- **GnuPG 2.x** (portable, con DLL e pinentry)
+- **Script `.cmd`** per tutte le operazioni comuni (generazione chiavi, cifratura, verifica, decifratura)
+- **Documentazione** operativa e di riferimento tecnico
+
+Il kit gestisce l'intero ciclo di vita di uno scambio sicuro: generazione chiavi, verifica delle chiavi ricevute, cifratura multi-destinatario, decifratura e controllo firma digitale.
+
+---
+
+## Struttura
 
 ```
 KIT_GPG/
-├── bin/           GnuPG + DLLs + pinentry
-├── home/          GNUPGHOME (portable keyring)
-├── trust/         Sender's public key and fingerprint
-├── run/           Operational scripts
-├── docs/          Documentation
-├── in/            Drop zone for incoming .gpg files
-├── out/           Decryption output
-└── reports/       Automatic logs
+├── bin/           GnuPG + DLL + pinentry
+├── home/          GNUPGHOME (keyring portabile)
+├── trust/
+│   ├── publickey.asc      chiave pubblica mittente principale
+│   ├── fingerprint.txt    fingerprint atteso (per Setup_Trust)
+│   └── import/            zona di carico chiavi pubbliche aggiuntive
+│       └── imported/      file .asc già importati (archiviati automaticamente)
+├── run/           Script operativi
+├── docs/          Guide
+├── in/            Drop zone file .gpg in ingresso
+├── out/           File cifrati in uscita
+└── reports/       Log automatici
 ```
 
 ---
 
-## Quick Start
+## Avvio rapido
 
-### 1. Generate your keys
+### 1. Genera le tue chiavi
 ```
 run\Setup_keys.cmd
 ```
 
-### 2. Verify the sender's key *(mandatory before first use)*
-Copy the sender's `publickey.asc` and `fingerprint.txt` into the `trust/` folder, then:
+### 2. Verifica la chiave ricevuta *(obbligatorio prima del primo utilizzo)*
+Copia `publickey.asc` e `fingerprint.txt` nella cartella `trust/`, poi:
 ```
 run\Setup_Trust.cmd
 ```
 
-### 3. Send your public key to the sender
+### 3. Invia la tua chiave pubblica
 ```
-public_key_<Name>.asc   →   sender
+public_key_<Nome>.asc   →   controparte
 ```
 
-### 4. Decrypt received files
+### 4. Cifra e invia un file
+```
+drag & drop   →   run\cifra.cmd
+```
+
+### 5. Decifra i file ricevuti
 ```
 drag & drop   →   run\decifra.cmd
 ```
 
-### 5. Verify the digital signature
+### 6. Verifica la firma digitale
 ```
 drag & drop   →   run\verifica.cmd
 ```
 
 ---
 
-## Scripts
+## Script
 
-| Script | Description |
+| Script | Descrizione |
 |--------|-------------|
-| `run\Setup_keys.cmd` | Generate, export and delete personal keys |
-| `run\Setup_Trust.cmd` | Import, verify and declare the sender's key trusted |
-| `run\decifra.cmd` | Decrypt `.gpg` files (drag & drop or prompt) |
-| `run\verifica.cmd` | Verify digital signature — supports AEAD (GPG 2.3+) |
-| `run\diagnostica.cmd` | Full diagnostics with report |
+| `run\Setup_keys.cmd` | Genera, esporta, elimina chiavi personali |
+| `run\Setup_Trust.cmd` | Importa, verifica e dichiara fidata una chiave pubblica |
+| `run\cifra.cmd` | Cifra e firma file — wizard guidato con selezione destinatari multipli |
+| `run\decifra.cmd` | Decifra file `.gpg` (drag & drop o prompt) |
+| `run\verifica.cmd` | Verifica firma digitale — supporta AEAD (GPG 2.3+) |
+| `run\diagnostica.cmd` | Diagnostica completa con report |
 
 ---
 
-## Documentation
+## Documentazione
 
-| Document | Audience |
-|----------|----------|
-| `docs\Guida_Operativa_Kit_GPG_v1_5.md` | Non-technical users — complete step-by-step guide (Italian) |
-| `docs\Guida_Operativa_Kit_GPG_v1_5_EN.md` | Non-technical users — complete step-by-step guide (English) |
-| `docs\GuidaRapida_v1_5.md` | Technical users — operational reference and algorithms (Italian) |
-| `docs\GuidaRapida_v1_5_EN.md` | Technical users — operational reference and algorithms (English) |
+| Documento | Destinatari |
+|-----------|-------------|
+| `docs\Guida_Operativa_Kit_GPG_v2_0.md` | Utenti — guida completa passo-passo (IT) |
+| `docs\Guida_Operativa_Kit_GPG_v2_0_EN.md` | Users — full step-by-step guide (EN) |
+| `docs\GuidaRapida_v2_0.md` | Tecnici — riferimento operativo e algoritmi (IT) |
+| `docs\GuidaRapida_v2_0_EN.md` | Technical users — operational reference (EN) |
 
 ---
 
-## Requirements
+## Requisiti
 
 - Windows 10 / 11
-- No installation required
-- No Internet connection needed
+- Nessuna installazione richiesta
+- Nessuna connessione Internet necessaria
 
 ---
 
-## Regulatory Compliance
+## Note tecniche
 
-This kit is a **technical tool** and is not directly subject to cybersecurity regulations. However, organisations that adopt it to protect sensitive data exchanges can reference the following frameworks when assessing its alignment with their own compliance obligations.
-
-### NIS2 — D.Lgs. 138/2024 (transposition of EU Directive 2022/2555)
-
-In force since 16 October 2024, the decree requires essential and important entities to adopt technical and organisational measures including, explicitly, **"policies and procedures relating to the use of cryptography and, where appropriate, encryption"** (art. 24).
-
-The kit supports this requirement by:
-- Implementing OpenPGP asymmetric encryption with RSA 3072-bit keys (recommended standard)
-- Ensuring authentication via digital signature on every exchanged file
-- Producing verifiable logs and reports for every operation (audit trail)
-- Enforcing explicit fingerprint verification before declaring a key trusted (documented chain of trust)
-
-> ⚠️ The kit is a technical component. NIS2 compliance also requires organisational measures, governance and incident notification, which are outside the scope of this tool.
-
-### GDPR — EU Regulation 2016/679
-
-Art. 32 GDPR requires appropriate technical measures to ensure security of processing, including encryption of personal data.
-
-The kit supports this requirement by:
-- Transmitting personal data files exclusively in encrypted form
-- Keeping private keys on the recipient's device at all times
-- Operating completely offline — no data passes through third-party servers
-- Using digital signatures to guarantee integrity and authenticity (art. 5 GDPR — integrity principle)
-
-### ACN — Cryptographic Functions Guidelines
-
-Italy's National Cybersecurity Agency (ACN) promotes the use of cryptography throughout the ICT lifecycle. The CVCN (National Evaluation and Certification Centre) explicitly requires PGP keys of type RSA + RSA (2048, 3072 or 4096 bits) for official document exchanges.
-
-The kit uses **RSA 3072 bits** by default, in line with these requirements. Key validity is set to **3 years**, consistent with ACN recommendations.
-
-### Summary
-
-| Regulatory requirement | Reference | Supported by kit |
-|------------------------|-----------|-----------------|
-| Use of cryptography | NIS2 art. 24 / D.Lgs. 138/2024 | ✅ OpenPGP RSA 3072 |
-| Personal data encryption | GDPR art. 32 | ✅ Asymmetric encryption |
-| Integrity and authenticity | GDPR art. 5 | ✅ Mandatory digital signature |
-| Chain of trust verification | ACN Cryptographic Guidelines | ✅ Dual-channel fingerprint verification |
-| RSA 2048/3072/4096 keys | ACN / CVCN | ✅ RSA 3072 (default) |
-| Audit trail | NIS2 art. 24 | ✅ Automatic reports in `reports/` |
-| Offline operation | Security best practices | ✅ No network dependency |
-
----
-
-## Technical Notes
-
-- **GNUPGHOME** is set explicitly by every script via `--homedir <root>\home`, ensuring complete isolation from the system keyring.
-- `verifica.cmd` detects both classic format (`:encrypted data packet:`) and AEAD (`:aead encrypted packet:`), compatible with GPG 2.3+.
-- `Setup_Trust.cmd` retrieves the sender's email dynamically from the keyring via fingerprint — no hardcoded values.
-- Trust is set via `--import-ownertrust`: level 4 (FULL) with single verification, level 5 (ULTIMATE) with dual verification (kit file + email channel).
+- **GNUPGHOME** è impostato esplicitamente da ogni script con `--homedir <root>\home`, garantendo isolamento completo dal keyring di sistema.
+- `cifra.cmd` supporta cifratura multi-destinatario con menu toggle interattivo. Usa `--trust-model always` per evitare richieste interattive di conferma su chiavi selezionate consapevolmente dall'utente.
+- `cifra.cmd` gestisce l'importazione di chiavi pubbliche aggiuntive da `trust\import\`: i file vengono spostati in `imported\` dopo l'importazione e non vengono mai riproposti.
+- `verifica.cmd` rileva sia il formato classico (`:encrypted data packet:`) che AEAD (`:aead encrypted packet:`), compatibile con GPG 2.3+.
+- `Setup_Trust.cmd` ricava la mail del mittente dinamicamente dal keyring tramite fingerprint, senza riferimenti hardcoded.
+- Il trust viene impostato via `--import-ownertrust`: livello 4 (FULL) con verifica singola, livello 5 (ULTIMATE) con doppia verifica (file kit + canale email).
+- Tutti gli script CMD seguono lo stile **goto-safe**: nessuna label dentro blocchi `if (...)` o `for (...)`, garantendo compatibilità e stabilità su tutte le versioni di Windows CMD.
 
 ---
 
 ## Changelog
 
+### v2.0
+- `cifra.cmd`: nuovo script — Encryption Wizard con selezione multi-destinatario (toggle interattivo), importazione chiavi pubbliche da `trust\import\` con archiviazione automatica in `imported\`, selezione chiave firmataria, riepilogo e conferma prima della cifratura
+- `cifra.cmd`: aggiunto `--trust-model always` — eliminata richiesta interattiva di conferma su chiavi senza trust configurato
+- `cifra.cmd`: fix bug delayed expansion (`!RECIP_COUNT!` invece di `%RECIP_COUNT%`) — risolto nome destinatario vuoto dopo selezione
+- `cifra.cmd`: fix bug label-in-block — riscrittura goto-safe di tutto il flusso di importazione; eliminato `call :IMPORT_ONE_KEY` dentro `for /L`
+- `cifra.cmd`: fix importazione sempre riproposta — file spostati in `imported\` indipendentemente dal RC di GPG
+- `cifra.cmd`: fix variabili GPG — `!SENDER_FPR!` e `!RECIP_ARGS!` trasferiti in variabili normali prima della chiamata GPG
+- `diagnostica.cmd`: aggiornato a v2.0
+- `verifica.cmd`: aggiornato a v2.0
+- `Setup_Trust.cmd`: aggiornato a v2.0
+- Guide: riscrittura completa v2.0 — guida operativa e guida rapida in italiano e inglese
+
+### v1.6
+- `verifica.cmd`: aggiunto rilevamento pacchetti AEAD — risolto bug UNKNOWN/RC=2 su file cifrati con GPG 2.3+
+- `verifica.cmd`: riscrittura goto-safe completa
+- `decifra.cmd`: rimosso riferimento hardcoded `sogei_publickey.asc`, allineato a `trust\publickey.asc`
+
 ### v1.5
-- `Setup_Trust.cmd`: removed hardcoded sender email; mail now extracted dynamically from keyring via fingerprint
-- `Setup_Trust.cmd`: mail extraction algorithm aligned with `Setup_keys.cmd` (`:::=:EMPTY:` substitution, token 10)
-- `verifica.cmd`: added AEAD packet detection — fixed UNKNOWN/RC=2 bug on files encrypted with GPG 2.3+
-- `verifica.cmd`: added final `pause` — fixed window closing immediately on drag & drop
-- `decifra.cmd`: removed hardcoded public key reference, aligned to `trust\publickey.asc`
-- Documentation: full rewrite v1.5 — operational guide (non-technical) and quick reference (technical), both IT and EN
-- `trust/`: included test `publickey.asc` and `fingerprint.txt` for functional verification
+- `Setup_Trust.cmd`: rimossi riferimenti hardcoded alla mail del mittente; mail ora estratta dinamicamente dal keyring tramite fingerprint
+- `Setup_Trust.cmd`: algoritmo di estrazione mail allineato a quello di `Setup_keys.cmd`
+- `verifica.cmd`: aggiunta `pause` finale — risolto problema finestra che si chiudeva in drag&drop
+- Guide: riscrittura completa — guida operativa e guida rapida
 
 ### v1.4
-- Initial public release
+- Prima versione pubblica

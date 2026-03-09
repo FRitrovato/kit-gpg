@@ -1,6 +1,6 @@
 @echo off
 REM ============================================================================
-REM  verifica.cmd - Verifica firma file GPG - VERSIONE 1.6 (goto-safe)
+REM  verifica.cmd - Verifica firma file GPG - VERSIONE 2.0
 REM
 REM  - Supporta file sign+encrypt (.gpg) verificando la firma DURANTE il decrypt
 REM    (output=NUL, nessuna scrittura in chiaro)
@@ -64,7 +64,7 @@ REM ============================================================================
 cls
 echo.
 echo +===============================================================+
-echo ^|    SIGNATURE VERIFICATION WIZARD v1.6                        ^|
+echo ^|    SIGNATURE VERIFICATION WIZARD v2.0                        ^|
 echo +===============================================================+
 echo.
 echo %ESC%[32m[INFO] Percorso Kit: %BASEDIR%%ESC%[0m

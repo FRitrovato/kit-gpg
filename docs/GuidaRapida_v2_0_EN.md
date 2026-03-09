@@ -1,6 +1,6 @@
-# GPG PORTABLE KIT — QUICK REFERENCE v1.5
+# GPG PORTABLE KIT — QUICK REFERENCE v2.0
 
-> Concise operational reference. For the full guide: `Guida_Operativa_Kit_GPG_v1_5_EN.md`
+> Concise operational reference. For the full guide: `Guida_Operativa_Kit_GPG_v2_0_EN.md`
 
 ---
 
@@ -45,6 +45,25 @@ public_key_<Name>.asc  →  sender (email / PEC / portal)
 
 ## DAY-TO-DAY OPERATIONS
 
+### Encrypt a file to send
+```
+drag & drop  →  run\cifra.cmd
+```
+Or double-click `cifra.cmd` and enter the file path when prompted.
+
+**Workflow:**
+1. Select signing key (your private key)
+2. Import additional public keys from `trust\import\` (optional)
+3. Select recipients from the keyring (toggle, multi-select supported)
+4. Enter file path (or drag & drop)
+5. Summary and confirmation → Pinentry for Passphrase
+6. Output: `out\<filename>.gpg`
+
+**Importing new public keys:**
+- Copy the `.asc` files received from recipients into `trust\import\`
+- On the next launch of `cifra.cmd`, the script will offer to import them
+- After import, files are moved to `trust\import\imported\` automatically
+
 ### Decrypt a file
 ```
 drag & drop  →  run\decifra.cmd
@@ -59,14 +78,12 @@ Output in the same folder as the input file, without the `.gpg` extension.
 |----|--------|
 | 0 | OK — decrypted + valid signature |
 | 1 | OK with warning — trust not validated (run Setup_Trust) |
-| 2 | Decrypted — signature unverifiable (sender key missing or AEAD not detected*) |
+| 2 | Decrypted — signature not verifiable (sender key absent or AEAD not detected) |
 | 3 | FAIL — decryption failed |
 | 4 | FAIL — wrong passphrase |
 | 5 | FAIL — no matching private key |
 
-*`verifica.cmd` detects both `:encrypted data packet:` and `:aead encrypted packet:`.
-
-### Verify the signature
+### Verify signature
 ```
 drag & drop  →  run\verifica.cmd
 ```
@@ -78,7 +95,7 @@ drag & drop  →  run\verifica.cmd
 | `GOOD SIGNATURE (TRUST OK)` | `[GNUPG:] GOODSIG` + `TRUST_FULLY` or `TRUST_ULTIMATE` |
 | `SIGNATURE OK but TRUST not verified` | `GOODSIG` without trust — run Setup_Trust |
 | `BAD SIGNATURE` | `BADSIG` or `ERRSIG` — file compromised |
-| `Public key missing` | `NO_PUBKEY` — run Setup_Trust |
+| `Public key absent` | `NO_PUBKEY` — run Setup_Trust |
 | `UNKNOWN` | None of the above tokens — check the report |
 
 Report saved in `reports\verify_report_<timestamp>.txt`.
@@ -89,27 +106,31 @@ Report saved in `reports\verify_report_<timestamp>.txt`.
 
 ```
 KIT_GPG/
-├── bin/       gpg.exe, gpg-agent.exe, pinentry-w32.exe, paperkey.exe + DLLs
-├── home/      GNUPGHOME — keyring, trustdb, gpg.conf
-├── trust/     publickey.asc + fingerprint.txt  (provided by sender)
-├── run/       Setup_keys | Setup_Trust | decifra | verifica | diagnostica
-├── docs/      Operational Guide + Quick Reference (IT + EN)
-├── in/        drop zone for incoming .gpg files
-├── out/       decryption output (optional)
-├── reports/   automatic logs from all scripts
-└── backups/   manual backups
+├── bin/           gpg.exe, gpg-agent.exe, pinentry-w32.exe, paperkey.exe + DLLs
+├── home/          GNUPGHOME — keyring, trustdb, gpg.conf
+├── trust/
+│   ├── publickey.asc      main sender's public key
+│   ├── fingerprint.txt    expected fingerprint (for Setup_Trust)
+│   └── import/            drop zone for additional public keys
+│       └── imported/      already-imported .asc files (archived automatically)
+├── run/           Setup_keys | Setup_Trust | cifra | decifra | verifica | diagnostica
+├── docs/          Operational Guide + Quick Reference
+├── in/            drop zone for incoming .gpg files
+├── out/           outgoing encrypted .gpg files
+├── reports/       automatic logs from all scripts
+└── backups/       manual backups
 ```
 
 **GNUPGHOME** = `<kit_root>\home` — set explicitly by every script via `--homedir`.
 
 ---
 
-## ALGORITHM DETAILS
+## SCRIPT INTERNALS
 
 ### Fingerprint extraction (Setup_Trust + diagnostica)
 ```batch
 REM GPG colon format: fpr::::::::::<FINGERPRINT>:
-set "TEMP_ROW=!ROW:::=:EMPTY:!"   ← neutralise consecutive ::
+set "TEMP_ROW=!ROW:::=:EMPTY:!"   ← neutralises consecutive ::
 for /f "tokens=10 delims=:" %%F in ("!TEMP_ROW!") do set "VAL=%%F"
 ```
 
@@ -123,7 +144,18 @@ for /f "tokens=2 delims=<"  %%A in ("!UID_FULL!")  do (
 )
 ```
 
-### AEAD encryption detection (verifica.cmd)
+### Encryption + signing (cifra.cmd)
+```batch
+REM --trust-model always: suppresses interactive prompts for keys without configured trust
+REM Delayed variables are transferred to normal variables before the GPG call
+set "GPG_SIGNER=!SENDER_FPR!"
+set "GPG_RECIP=!RECIP_ARGS!"
+"%GPG_EXE%" --homedir "%HOME%" --trust-model always ^
+    --encrypt --sign --local-user "%GPG_SIGNER%" %GPG_RECIP% ^
+    --output "%OUT_FILE%" "%GPG_INPUT%"
+```
+
+### AEAD detection (verifica.cmd)
 ```batch
 findstr /C:":encrypted data packet:" "%TMP_PKT%" >nul && set "IS_ENCRYPTED=1"
 findstr /C:":aead encrypted packet:"  "%TMP_PKT%" >nul && set "IS_ENCRYPTED=1"
@@ -133,15 +165,15 @@ findstr /C:":aead encrypted packet:"  "%TMP_PKT%" >nul && set "IS_ENCRYPTED=1"
 
 ## QUICK TROUBLESHOOTING
 
-| Symptom | Cause | Fix |
-|---------|-------|-----|
+| Symptom | Likely cause | Fix |
+|---------|-------------|-----|
 | `TRUST not confirmed` always | Setup_Trust not run | `run\Setup_Trust.cmd` |
-| `UNKNOWN` + RC=2 on encrypted file | AEAD not detected (old `verifica`) | Update to `verifica.cmd` v1.6+ |
+| `UNKNOWN` + RC=2 on encrypted file | AEAD not detected (old `verifica`) | Available from v2.0 |
 | Fingerprint mismatch | Key replaced / tampered | Contact sender out-of-band |
-| `No secret key` | Sender used outdated public key | Resend updated `public_key_<Name>.asc` |
+| `No secret key` | Sender used an outdated public key | Resend updated `public_key_<Name>.asc` |
 | `Bad passphrase` | Wrong passphrase | Retry; check CAPS LOCK and keyboard layout |
-| Script closes immediately | Drag&drop on old `verifica` without `pause` | Update to v1.6+ |
-| Path with `&` or accented chars | cmd cannot handle certain characters | Move kit to a simple path (e.g. `E:\KIT_GPG`) |
+| Import files re-proposed every run | (bug in earlier versions) | Available from v2.0 |
+| Path with `&` or accents | cmd cannot handle certain characters | Move kit to a simple path (e.g. `E:\KIT_GPG`) |
 
 ### Full diagnostics
 ```
@@ -154,25 +186,31 @@ Checks: folder structure, GPG version, private/public keys, gpg.conf, disk space
 ## USEFUL GPG COMMANDS
 
 ```bash
-# List private keys with fingerprint
+# List private keys with fingerprints
 gpg --homedir home --list-secret-keys --with-colons --fingerprint
 
 # List public keys
 gpg --homedir home --list-keys --keyid-format LONG
 
-# Check set trust
+# Check configured trust
 gpg --homedir home --export-ownertrust
 
-# Packet dump (debug encryption/signature)
+# Packet dump (debug encryption/signing)
 gpg --homedir home --list-packets file.gpg
 
 # Manual signature verification
 gpg --homedir home --status-fd 1 --verify file.gpg
 
-# Manual decrypt (output to stdout)
+# Manual decryption (output to stdout)
 gpg --homedir home --decrypt file.gpg
+
+# Manual multi-recipient encryption
+gpg --homedir home --trust-model always --encrypt --sign \
+    --local-user <SIGNER_FPR> \
+    --recipient <RECIP1_FPR> --recipient <RECIP2_FPR> \
+    --output file.gpg original_file
 ```
 
 ---
 
-*GPG Kit v1.5 — Quick Reference*
+*GPG Kit v2.0 — Quick Reference*
