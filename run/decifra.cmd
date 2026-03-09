@@ -1,6 +1,6 @@
 @echo off
 REM ============================================================================
-REM  decifra.cmd - Decrypt Wizard (drag&drop)
+REM  decifra.cmd - Decrypt Wizard (drag&drop) - VERSIONE 1.5
 REM  Scopo: decifrare un file .gpg trascinato sopra questo script, salvando
 REM         l'output nella stessa cartella del file di input (senza estensione .gpg)
 REM         e producendo un report in: <RADICE_KIT>\reports\
@@ -52,14 +52,8 @@ set "REPORT_DIR=%BASEDIR%\reports"
 REM Crea la directory report se non esiste (mkdir non va in errore se esiste gia').
 if not exist "%REPORT_DIR%" mkdir "%REPORT_DIR%"
 
-REM Costruisce un timestamp "safe" usando %date% e %time% (formato locale) e sostituzioni
-REM - rimuove spazi
-REM - sostituisce "/" "-" ":" "," con "_"
-set "TS=%date%_%time%"
-set "TS=%TS: =%"
-set "TS=%TS:/=-%"
-set "TS=%TS::=-%"
-set "TS=%TS:,=-%"
+REM Costruisce un timestamp locale-indipendente via PowerShell
+for /f "usebackq delims=" %%T in (`powershell -NoProfile -Command "(Get-Date).ToString('yyyyMMdd_HHmmss')"`) do set "TS=%%T"
 
 REM File report: nome univoco basato su timestamp
 set "REPORT_FILE=%REPORT_DIR%\decrypt_report_%TS%.txt"
@@ -237,7 +231,7 @@ goto :ESITO_END
 
 :KO_PASS
 echo.
-echo(%ESC%[31m Passprhase errata decifratura fallita (RC=%RC%)
+echo(%ESC%[31m Passphrase errata, decifratura fallita (RC=%RC%)
 echo Controlla il report: Sbagliata la passphrase
 echo [FAIL] Esito: DECRITTAZIONE KO - No Passphrase- (RC=%RC%)>>"%REPORT_FILE%"
 echo File output: %OUT_FILE%>>"%REPORT_FILE%"
@@ -247,7 +241,7 @@ goto :ESITO_END
 echo.
 echo(%ESC%[31m Manca chiave privata (RC=%RC%)
 echo Controlla il report: no chiave privata
-echo [FAIL] Esito: DECRITTAZIONE KO - No no chiave privata - (RC=%RC%)>>"%REPORT_FILE%"
+echo [FAIL] Esito: DECRITTAZIONE KO - Nessuna chiave privata - (RC=%RC%)>>"%REPORT_FILE%"
 echo File output: %OUT_FILE%>>"%REPORT_FILE%"
 goto :ESITO_END
 

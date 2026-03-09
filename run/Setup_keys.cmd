@@ -2,7 +2,7 @@
 setlocal EnableExtensions EnableDelayedExpansion
 
 REM ==========================================================
-REM  KIT_GPG - Setup Chiavi (V ultima - RAW Display + Fix Export)
+REM  KIT_GPG - Setup Chiavi - VERSIONE 1.5
 REM ==========================================================
 
 REM ----------------------------------------------------------
@@ -29,8 +29,22 @@ for %%I in ("%~dp0..") do set "BASE_DIR=%%~fI"
 set "BIN=%BASE_DIR%\bin"
 set "HOME=%BASE_DIR%\home"
 set "REPORT_DIR=%BASE_DIR%\reports"
-set "REPORT_FILE=%REPORT_DIR%\setup_keys.log"
 set "BACKUP_DIR=%BASE_DIR%\backups"
+
+REM Timestamp locale-indipendente via PowerShell
+for /f "usebackq delims=" %%T in (`powershell -NoProfile -Command "(Get-Date).ToString('yyyyMMdd_HHmmss')"`) do set "TS=%%T"
+set "REPORT_FILE=%REPORT_DIR%\setup_keys_%TS%.txt"
+
+REM Crea cartella reports e inizializza il file di log
+if not exist "%REPORT_DIR%" mkdir "%REPORT_DIR%" >nul 2>&1
+(
+  echo ==========================================================
+  echo KIT GPG - SETUP KEYS REPORT
+  echo ==========================================================
+  echo Data/Ora: %date% %time%
+  echo Utente: %USERNAME%
+  echo ----------------------------------------------------------
+) > "%REPORT_FILE%"
 
 if not exist "%BIN%\gpg.exe" (
   echo %C_RED%[FATALE]%C_RST% gpg.exe non trovato.
@@ -114,8 +128,9 @@ REM Silenziamento totale di GPG per mostrare solo i nostri messaggi
 
 if not errorlevel 1 (
   echo %C_GRN%[OK]%C_RST% La chiave e' stata creata e firmata con successo.
-  
-  call :BUILD_KEY_LIST [cite: 13, 19]
+  echo [OK] Chiave generata per: %REALNAME% ^<%EMAIL%^> >> "%REPORT_FILE%"
+
+  call :BUILD_KEY_LIST
   
   REM Recupero sicuro del fingerprint post-generazione
   call set "FOUND_FPR=%%K_FPR[!KEY_COUNT!]%%"
@@ -149,8 +164,10 @@ if exist "%PUBKEY_FILE%" (
     echo.
     echo Invia questo file: %C_GRN%%PUBKEY_FILE%%C_RST%
     echo.
+    echo [OK] Chiave pubblica esportata: %PUBKEY_FILE% >> "%REPORT_FILE%"
 ) else (
     echo %C_RED%[ERRORE]%C_RST% Export fallito.
+    echo [ERRORE] Export chiave pubblica fallito per FPR: !FOUND_FPR! >> "%REPORT_FILE%"
 )
 pause
 goto END
@@ -159,6 +176,13 @@ goto END
 set /p CONF=Confermi cancellazione? (S/N):
 if /i not "%CONF%"=="S" goto MENU_KEY
 "%BIN%\gpg.exe" --homedir "%HOME%" --batch --yes --delete-secret-and-public-key "%FOUND_FPR%"
+if errorlevel 1 (
+  echo %C_RED%[ERRORE]%C_RST% Cancellazione chiave fallita.
+  echo [ERRORE] Cancellazione chiave fallita - FPR: %FOUND_FPR% >> "%REPORT_FILE%"
+) else (
+  echo %C_GRN%[OK]%C_RST% Chiave cancellata.
+  echo [OK] Chiave cancellata - FPR: %FOUND_FPR% >> "%REPORT_FILE%"
+)
 goto RELOAD_LIST
 
 :BUILD_KEY_LIST
