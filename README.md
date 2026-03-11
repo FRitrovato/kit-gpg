@@ -107,10 +107,10 @@ drag & drop   →   run\verifica.cmd
 
 | Documento | Destinatari |
 |-----------|-------------|
-| `docs\Guida_Operativa_Kit_GPG_v2_0.md` | Utenti — guida completa passo-passo (IT) |
-| `docs\Guida_Operativa_Kit_GPG_v2_0_EN.md` | Users — full step-by-step guide (EN) |
-| `docs\GuidaRapida_v2_0.md` | Tecnici — riferimento operativo e algoritmi (IT) |
-| `docs\GuidaRapida_v2_0_EN.md` | Technical users — operational reference (EN) |
+| `docs\Guida_Operativa_v2_1.md` | Utenti — guida completa passo-passo (IT) |
+| `docs\Operational_Guide_v2_1_EN.md` | Users — full step-by-step guide (EN) |
+| `docs\Guida_Rapida_v2_1.md` | Tecnici — riferimento operativo e algoritmi (IT) |
+| `docs\Quick_Reference_v2_1_EN.md` | Technical users — operational reference (EN) |
 
 ---
 
@@ -135,7 +135,27 @@ drag & drop   →   run\verifica.cmd
 
 ---
 
+## Avvio interfaccia grafica
+
+**Doppio clic su `KIT_GPG.cmd`** nella cartella principale del kit.
+
+In alternativa, dalla cartella `run\`:
+```
+run\avvia_GUI.cmd
+```
+
+Richiede PowerShell (incluso in Windows 10/11). Nessuna installazione aggiuntiva richiesta.
+
+---
+
 ## Changelog
+
+### v2.1
+- `KIT_GPG_GUI.ps1`: fix XAML — rimosso `LetterSpacing` da tutti i TextBlock (causava crash al caricamento su alcune versioni di Windows)
+- `KIT_GPG_GUI.ps1`: fix scope timer post-diagnostica — variabile corretta in `$script:diagTimer` per callback WPF
+- `KIT_GPG_GUI.ps1`: fix scope timer reset drop zone — variabile corretta in `$script:dropResetTimer`
+- `KIT_GPG.cmd`: aggiunto launcher nella root — doppio clic per avviare la GUI direttamente
+- Guide: aggiornate a v2.1 — guida operativa e guida rapida in italiano e inglese
 
 ### v2.0
 - `cifra.cmd`: nuovo script — Encryption Wizard con selezione multi-destinatario (toggle interattivo), importazione chiavi pubbliche da `trust\import\` con archiviazione automatica in `imported\`, selezione chiave firmataria, riepilogo e conferma prima della cifratura
