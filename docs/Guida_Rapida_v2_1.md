@@ -1,6 +1,6 @@
-# KIT GPG — GUIDA RAPIDA v2.0
+# KIT GPG — GUIDA RAPIDA v2.1
 
-> Riferimento operativo sintetico. Per la guida completa: `Guida_Operativa_Kit_GPG_v2_0.md`
+> Riferimento operativo sintetico. Per la guida completa: `Guida_Operativa_Kit_GPG_v2_1.md`
 
 ---
 
@@ -169,6 +169,8 @@ findstr /C:":aead encrypted packet:"  "%TMP_PKT%" >nul && set "IS_ENCRYPTED=1"
 |---------|-------|-----|
 | `TRUST not confirmed` sempre | Setup_Trust non eseguito | `run\Setup_Trust.cmd` |
 | `UNKNOWN` + RC=2 su file cifrato | AEAD non rilevato (vecchia `verifica`) | Disponibile dalla v2.0 |
+| GUI non si avvia (LetterSpacing) | `LetterSpacing` non supportato da WPF | Risolto in v2.1 |
+| Timer diagnostica: errore `null` | Scope variabile timer in PowerShell | Risolto in v2.1 |
 | Fingerprint non corrisponde | Chiave sostituita/manomessa | Contatta mittente fuori banda |
 | `No secret key` | Mittente ha usato chiave pubblica obsoleta | Reinvia `public_key_<Nome>.asc` aggiornata |
 | `Bad passphrase` | Passphrase errata | Riprova; controlla CAPS LOCK e layout tastiera |
@@ -213,4 +215,4 @@ gpg --homedir home --trust-model always --encrypt --sign \
 
 ---
 
-*KIT GPG v2.0 — Quick Reference*
+*KIT GPG v2.1 — Quick Reference*

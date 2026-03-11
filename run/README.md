@@ -107,10 +107,10 @@ drag & drop   →   run\verifica.cmd
 
 | Documento | Destinatari |
 |-----------|-------------|
-| `docs\Guida_Operativa_Kit_GPG_v2_0.md` | Utenti — guida completa passo-passo (IT) |
-| `docs\Guida_Operativa_Kit_GPG_v2_0_EN.md` | Users — full step-by-step guide (EN) |
-| `docs\GuidaRapida_v2_0.md` | Tecnici — riferimento operativo e algoritmi (IT) |
-| `docs\GuidaRapida_v2_0_EN.md` | Technical users — operational reference (EN) |
+| `docs\Guida_Operativa_Kit_GPG_v2_1.md` | Utenti — guida completa passo-passo (IT) |
+| `docs\Guida_Operativa_Kit_GPG_v2_1_EN.md` | Users — full step-by-step guide (EN) |
+| `docs\GuidaRapida_v2_1.md` | Tecnici — riferimento operativo e algoritmi (IT) |
+| `docs\GuidaRapida_v2_1_EN.md` | Technical users — operational reference (EN) |
 
 ---
 
@@ -136,6 +136,12 @@ drag & drop   →   run\verifica.cmd
 ---
 
 ## Changelog
+
+### v2.1
+- `KIT_GPG_GUI.ps1`: fix XAML — rimosso `LetterSpacing` da tutti i `TextBlock` (proprietà non supportata da WPF/.NET Framework; causava crash completo al caricamento della GUI)
+- `KIT_GPG_GUI.ps1`: fix timer post-diagnostica — `$timer` → `$script:diagTimer` per garantire visibilità della variabile dentro il callback `Add_Tick` (WPF esegue gli scriptblock in uno scope separato)
+- `KIT_GPG_GUI.ps1`: fix timer reset drop zone — stessa correzione applicata al timer di ripristino hint dopo drag & drop (`$t` → `$script:dropResetTimer`)
+- `KitGPG.ps1`: fix XAML — rimosso `LetterSpacing` dai TextBlock "OPERAZIONI PRINCIPALI" e "GESTIONE"
 
 ### v2.0
 - `cifra.cmd`: nuovo script — Encryption Wizard con selezione multi-destinatario (toggle interattivo), importazione chiavi pubbliche da `trust\import\` con archiviazione automatica in `imported\`, selezione chiave firmataria, riepilogo e conferma prima della cifratura

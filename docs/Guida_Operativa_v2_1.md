@@ -1,5 +1,5 @@
 # KIT GPG PORTABILE
-**Versione 2.0**  
+**Versione 2.1**  
 **Guida Operativa**  
 *Sistema sicuro per la cifratura, l'invio e la ricezione di dati sensibili e riservati*
 
@@ -440,9 +440,9 @@ In caso di problemi, esegui prima `run\diagnostica.cmd`: verifica la struttura d
 | `decryption failed: Bad passphrase` | Passphrase errata | Riprova; controlla CAPS LOCK e layout tastiera |
 | Verifica firma: TRUST non verificato | Setup_Trust.cmd non eseguito | Esegui Setup_Trust.cmd (sezione 4) |
 | Verifica firma: chiave assente | Chiave mittente non importata | Esegui Setup_Trust.cmd (sezione 4) |
-| File da importare riproposti ogni avvio | File non spostati in `imported\` | Aggiorna a KIT GPG v2.0 |
+| File da importare riproposti ogni avvio | File non spostati in `imported\` | Aggiorna a KIT GPG v2.1 |
 | Errore all'avvio dello script | Percorso con caratteri speciali (`&`, accenti) | Sposta il kit in percorso senza spazi o simboli (es. `E:\KIT_GPG`) |
-| GPG chiede conferma su ogni chiave destinatario | Trust non configurato (versioni precedenti) | Aggiorna a KIT GPG v2.0 — risolto con `--trust-model always` |
+| GPG chiede conferma su ogni chiave destinatario | Trust non configurato (versioni precedenti) | Aggiorna a KIT GPG v2.1 — risolto con `--trust-model always` |
 
 ### 11.3 Passphrase dimenticata
 
@@ -520,5 +520,5 @@ A: Dopo ogni generazione o eliminazione di chiavi, e ogni volta che ricevi file 
 
 ---
 
-*KIT GPG Versione 2.0*  
+*KIT GPG Versione 2.1*  
 *Per supporto tecnico, contattare il proprio referente interno*

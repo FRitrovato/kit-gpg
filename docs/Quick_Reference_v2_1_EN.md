@@ -1,6 +1,6 @@
-# GPG PORTABLE KIT — QUICK REFERENCE v2.0
+# GPG PORTABLE KIT — QUICK REFERENCE v2.1
 
-> Concise operational reference. For the full guide: `Guida_Operativa_Kit_GPG_v2_0_EN.md`
+> Concise operational reference. For the full guide: `QUICK_REFERENCE_v2_1_EN.md`
 
 ---
 
@@ -169,6 +169,8 @@ findstr /C:":aead encrypted packet:"  "%TMP_PKT%" >nul && set "IS_ENCRYPTED=1"
 |---------|-------------|-----|
 | `TRUST not confirmed` always | Setup_Trust not run | `run\Setup_Trust.cmd` |
 | `UNKNOWN` + RC=2 on encrypted file | AEAD not detected (old `verifica`) | Available from v2.0 |
+| GUI fails to start (LetterSpacing) | `LetterSpacing` not supported by WPF | Fixed in v2.1 |
+| Diagnostics timer error (null) | PowerShell timer variable scope | Fixed in v2.1 |
 | Fingerprint mismatch | Key replaced / tampered | Contact sender out-of-band |
 | `No secret key` | Sender used an outdated public key | Resend updated `public_key_<Name>.asc` |
 | `Bad passphrase` | Wrong passphrase | Retry; check CAPS LOCK and keyboard layout |
@@ -213,4 +215,4 @@ gpg --homedir home --trust-model always --encrypt --sign \
 
 ---
 
-*GPG Kit v2.0 — Quick Reference*
+*GPG Kit v2.1 — Quick Reference*

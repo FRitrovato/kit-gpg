@@ -1,5 +1,5 @@
 # GPG PORTABLE KIT
-**Version 2.0**  
+**Version 2.1**  
 **Operational Guide**  
 *Secure system for encrypting, sending and receiving sensitive and confidential data*
 
@@ -436,9 +436,9 @@ In case of problems, first run `run\diagnostica.cmd`: it checks the kit structur
 | `decryption failed: Bad passphrase` | Wrong passphrase | Retry; check CAPS LOCK and keyboard layout |
 | Signature verification: TRUST not verified | Setup_Trust.cmd not run | Run Setup_Trust.cmd (section 4) |
 | Signature verification: key absent | Sender key not imported | Run Setup_Trust.cmd (section 4) |
-| Import files re-proposed every launch | Files not moved to `imported\` | Update to GPG Kit v2.0 |
+| Import files re-proposed every launch | Files not moved to `imported\` | Update to GPG Kit v2.1 |
 | Script closes immediately on start | Path with special characters (`&`, accents) | Move kit to a simple path (e.g. `E:\KIT_GPG`) |
-| GPG asks confirmation for each recipient | Trust not configured (older versions) | Update to GPG Kit v2.0 — resolved with `--trust-model always` |
+| GPG asks confirmation for each recipient | Trust not configured (older versions) | Update to GPG Kit v2.1 — resolved with `--trust-model always` |
 
 ### 11.3 Forgotten passphrase
 
@@ -468,7 +468,7 @@ A: No. Run it once for each received key. Repeat it only if the counterpart rene
 A: Yes. `cifra.cmd` supports multiple recipient selection with a toggle system. The encrypted file will be decryptable by each of the selected recipients.
 
 **Q: Does GPG ask for confirmation before encrypting for a key?**  
-A: This does not happen in GPG Kit v2.0. The script uses `--trust-model always` to avoid interactive prompts for keys consciously selected by the user.
+A: This does not happen in GPG Kit v2.1. The script uses `--trust-model always` to avoid interactive prompts for keys consciously selected by the user.
 
 **Q: What happens if the USB drive is damaged?**  
 A: If you have a backup, use that. If not, you must redo the full setup with new keys.
@@ -516,5 +516,5 @@ A: After every key generation or deletion, and every time you receive important 
 
 ---
 
-*GPG Kit Version 2.0*  
+*GPG Kit Version 2.1*  
 *For technical support, contact your internal reference person*

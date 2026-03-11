@@ -1,6 +1,6 @@
 @echo off
 REM ============================================================================
-REM  diagnostica.cmd - Diagnostica sistema KIT GPG - VERSIONE 2.0
+REM  diagnostica.cmd - Diagnostica sistema KIT GPG - VERSIONE 2.1
 REM  
 REM  Funzionalita':
 REM  - Verifica presenza e versione binari GPG
@@ -21,7 +21,7 @@ for /F %%a in ('echo prompt $E^| cmd') do set "ESC=%%a"
 cls
 echo.
 echo %ESC%[36m============================================================%ESC%[0m
-echo %ESC%[36m   KIT GPG - DIAGNOSTICA SISTEMA v2.0%ESC%[0m
+echo %ESC%[36m   KIT GPG - DIAGNOSTICA SISTEMA v2.1%ESC%[0m
 echo %ESC%[36m============================================================%ESC%[0m
 echo.
 
@@ -275,6 +275,7 @@ echo %ESC%[33m  [WARN] Nessuna chiave pubblica importata%ESC%[0m
 goto :PUB_CLEANUP
 
 :PUB_GPG_MISSING
+echo 2
 echo %ESC%[31m  [ERRORE] Impossibile verificare (gpg.exe mancante)%ESC%[0m
 goto :PUB_END
 

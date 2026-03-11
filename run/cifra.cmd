@@ -1,6 +1,6 @@
 @echo off
 REM ============================================================================
-REM  cifra.cmd - Encrypt + Sign Wizard (drag&drop) - VERSIONE 2.0
+REM  cifra.cmd - Encrypt + Sign Wizard (drag&drop) - VERSIONE 2.1
 REM
 REM  Scopo: cifrare e firmare un file trascinato sopra questo script, salvando
 REM         l'output nella cartella <RADICE_KIT>\out\ con estensione .gpg
@@ -65,7 +65,7 @@ REM ============================================================================
 cls
 echo.
 echo %C_CYA%+===============================================================+%C_RST%
-echo %C_CYA%^|    ENCRYPTION WIZARD - INVIO FILE SICURO              v2.0   ^|%C_RST%
+echo %C_CYA%^|    ENCRYPTION WIZARD - INVIO FILE SICURO              v2.1   ^|%C_RST%
 echo %C_CYA%+===============================================================+%C_RST%
 echo.
 
@@ -299,7 +299,7 @@ set "RECIP_ARGS="
 cls
 echo.
 echo %C_CYA%+===============================================================+%C_RST%
-echo %C_CYA%^|    ENCRYPTION WIZARD - INVIO FILE SICURO              v2.0   ^|%C_RST%
+echo %C_CYA%^|    ENCRYPTION WIZARD - INVIO FILE SICURO              v2.1   ^|%C_RST%
 echo %C_CYA%+===============================================================+%C_RST%
 echo.
 echo %C_CYA%================ SELEZIONE DESTINATARI =================%C_RST%
